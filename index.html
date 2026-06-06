@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>✨ Love Odyssey  ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <style>
+    /* ========== ESTILOS ORIGINALES ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: #fef7f2; transition: background 0.4s ease; overflow-x: hidden; }
+    .login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(ellipse at 30% 40%, #1e1a2f, #0c0a1a); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 3000; transition: opacity 1s; }
+    .login-card { background: rgba(30,25,45,0.8); backdrop-filter: blur(16px); border-radius: 2.5rem; padding: 2rem 1.8rem; text-align: center; border: 1px solid rgba(255,170,190,0.5); width: 85%; max-width: 360px; }
+    .login-card h2 { font-size: 2rem; background: linear-gradient(135deg,#ffbfd5,#ff9eb6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .login-card input { width:100%; padding:14px; margin:8px 0; border-radius:60px; border:none; text-align:center; background:#fff5f8; }
+    .login-btn { background:#ff809f; border:none; padding:14px; width:100%; border-radius:60px; font-weight:bold; color:#1f182a; box-shadow:0 6px 0 #ac3f5e; cursor:pointer; }
+    .shake { animation: shakeAnim 0.2s ease-in-out 0s 2; }
+    @keyframes shakeAnim { 0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } 100% { transform: translateX(0); } }
+    .main-content { opacity: 0; visibility: hidden; transition: opacity 0.9s ease; }
+    .app-wrapper { max-width: 550px; margin: 0 auto; background: transparent; min-height: 100vh; position: relative; }
+    .tab-bar { position: sticky; top:0; background: rgba(255,248,245,0.96); backdrop-filter: blur(14px); display: flex; flex-wrap: wrap; justify-content: space-around; padding: 0.7rem 0.3rem; border-bottom: 1px solid rgba(0,0,0,0.05); z-index: 200; gap: 0.2rem; }
+    .tab-item { flex:1; text-align: center; font-size:0.7rem; font-weight:600; padding:6px 0; border-radius:40px; transition:0.2s; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; color:#aa7a8c; }
+    .tab-item i { font-size:1.2rem; }
+    .tab-item.active { background: rgba(255,230,240,0.9); color:#d43f6b; }
+    .page-container { display: none; padding: 1.2rem 1rem 2rem; animation: fadePage 0.35s ease; }
+    .page-container.active-page { display: block; }
+    @keyframes fadePage { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    body.theme-inicio { background: #fff5f7; } body.theme-aventuras { background: #eef3ec; } body.theme-cartas { background: #fff3e8; }
+    body.theme-sorpresas { background: #fef0f5; } body.theme-musicas { background: #0a0a0f; } body.theme-personajes { background: #ecd9e6; }
+    body.theme-ceo { background: #f9efe2; } body.theme-objetivos { background: #eafaf1; }
+    .section-card { background: rgba(255,255,255,0.75); backdrop-filter: blur(4px); border-radius: 1.8rem; margin-bottom: 1.5rem; padding: 1.3rem; box-shadow: 0 12px 28px rgba(0,0,0,0.05); border: 1px solid rgba(255,200,210,0.5); }
+    .card-header { display: flex; align-items: center; gap:12px; margin-bottom:1rem; border-left:4px solid #ff8aa8; padding-left:12px; }
+    .adventure-road { display: flex; flex-direction: column; gap: 1.2rem; position: relative; }
+    .adventure-node { background: rgba(255,250,245,0.85); backdrop-filter: blur(8px); border-radius: 2rem; padding: 0.9rem; display: flex; gap: 1rem; align-items: center; transition: all 0.2s; border: 1px solid rgba(220,180,150,0.5); cursor: pointer; }
+    .adventure-img-mini { width: 70px; height: 70px; border-radius: 28px; object-fit: cover; box-shadow: 0 6px 14px rgba(0,0,0,0.15); transition: transform 0.3s ease; background: #d9c7b8; }
+    .adventure-text-mini h4 { font-weight: 800; color: #9b4b6e; }
+    
+    /* ========== MODAL FLOTANTE ========== */
+    .floating-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 4000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }
+    .floating-card { background: rgba(30,20,35,0.94); backdrop-filter: blur(20px); border-radius: 3rem; max-width: 340px; width: 88%; padding: 1.8rem 1.5rem; text-align: center; border: 1px solid rgba(255,180,200,0.7); box-shadow: 0 30px 40px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1); color: white; }
+    .floating-card.show-card { transform: scale(1); }
+    
+    .floating-card img { 
+      width: 190px; 
+      height: 190px; 
+      border-radius: 50%; 
+      object-fit: contain; 
+      padding: 6px;
+      margin-bottom: 1rem; 
+      background: radial-gradient(circle, rgba(255,192,203,0.3) 0%, rgba(0,0,0,0) 70%); 
+      box-shadow: 0 0 0 4px #ffc0d0, 0 0 0 8px rgba(255,150,170,0.3); 
+      animation: floatSlow 3s infinite ease-in-out; 
+    }
+    
+    /* DISEÑO EXCLUSIVO J-HOPE MODAL */
+    .floating-card.jhope-highlight { background: linear-gradient(135deg, #2e1a30, #4a1525, #5c2c16); border: 3px solid #ffd700; box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 0 30px 40px rgba(0,0,0,0.6); }
+    .floating-card.jhope-highlight img { width: 215px; height: 215px; border-radius: 50%; object-fit: contain; background: radial-gradient(circle, rgba(255,215,0,0.35) 0%, rgba(0,0,0,0) 75%); box-shadow: 0 0 0 4px #ffd700, 0 0 20px rgba(255, 215, 0, 0.8); animation: floatSlowJhope 2.5s infinite ease-in-out; }
+    .floating-card.jhope-highlight h3 { font-size: 1.6rem; color: #ffd700; text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4); }
+    .floating-card.jhope-highlight p { font-size: 0.95rem; line-height: 1.5; color: #fff0f5; }
+
+    @keyframes floatSlow { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+    @keyframes floatSlowJhope { 0% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.02); } 100% { transform: translateY(0px) scale(1); } }
+    
+    .close-float-btn { background: #ff90b0; border: none; border-radius: 60px; padding: 8px 20px; margin-top: 1rem; font-weight: bold; color: #2e1e2a; cursor: pointer; transition: 0.2s; }
+    .close-float-btn.jhope-btn { background: #ffd700; color: #301a04; box-shadow: 0 4px 12px rgba(255,215,0,0.3); }
+    
+    .carousel-container { overflow: hidden; border-radius: 28px; margin-bottom: 1rem; background: rgba(0,0,0,0.05); }
+    .carousel-slides { display: flex; transition: transform 0.5s ease; }
+    .carousel-slide { min-width: 100%; padding: 1rem; background: rgba(255,240,245,0.7); text-align: center; font-weight: 500; }
+    .timer-flex { display: flex; gap: 0.6rem; justify-content: space-between; flex-wrap: wrap; }
+    .time-box { background: #2d212e; border-radius: 1.2rem; padding: 0.6rem; color: white; text-align: center; flex: 1; }
+    .letter-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+    .letter-card-item { background: #fff0e5; border-radius: 60px; padding: 12px 18px; cursor: pointer; font-weight: 500; border: 1px solid #ffcec0; }
+    .scratch-token { margin-top: 12px; background: #e2cfc0; border-radius: 20px; padding: 1rem; text-align: center; font-weight: bold; }
+    
+    /* REPRODUCTOR DE MÚSICA */
+    .spotify-player { background: #1e1e2a; border-radius: 28px; padding: 1.5rem; color: white; margin-bottom: 1.5rem; }
+    .track-info { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+    .cover-art { width: 70px; height: 70px; background: #ff7b9c; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+    .controls { display: flex; justify-content: center; gap: 2rem; margin: 1rem 0; }
+    .control-btn { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
+
+    /* ========== ESTILOS DE ACORDEÓN ========== */
+    .members-accordion-container { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+    .member-accordion { background: #1e1e2a; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+    .member-accordion summary { padding: 14px 18px; font-weight: 700; color: #ffb7ca; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; font-size: 0.95rem; }
+    .member-accordion summary::-webkit-details-marker { display: none; }
+    .member-accordion summary::after { content: '\f107'; font-family: 'Font Awesome 5 Free'; font-weight: 900; transition: transform 0.3s ease; color: #aa7a8c; }
+    .member-accordion[open] { border: 1px solid rgba(255, 123, 156, 0.4); box-shadow: 0 4px 20px rgba(255, 123, 156, 0.15); }
+    .member-accordion[open] summary { color: #ff7b9c; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .member-accordion[open] summary::after { transform: rotate(180deg); color: #ff7b9c; }
+    .songs-list { padding: 6px 0; list-style: none; background: #161622; }
+    .song-row { padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.03); cursor: pointer; transition: background 0.2s; }
+    .song-row:last-child { border-bottom: none; }
+    .song-row:hover { background: #202030; }
+    .song-title-wrapper { display: flex; flex-direction: column; gap: 2px; }
+    .song-name { font-size: 0.88rem; font-weight: 600; color: #ffffff; }
+    .song-artist { font-size: 0.75rem; color: #a77a8a; }
+    .play-icon-cell { color: #ff7b9c; font-size: 0.85rem; opacity: 0.7; }
+
+    /* J-HOPE ACORDEÓN */
+    .member-accordion.jhope-accordion { border: 1px solid rgba(255, 215, 0, 0.2); }
+    .member-accordion.jhope-accordion[open] { border: 1px solid #ffd700; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.25); }
+    .member-accordion.jhope-accordion summary { color: #ffd700; }
+    .member-accordion.jhope-accordion summary::after { color: #ffd700; }
+    .member-accordion.jhope-accordion .play-icon-cell { color: #ffd700; }
+    
+    /* ========== ESTILOS SECCIONES PERSONAJES ========== */
+    .fav-section { margin-top: 1.5rem; background: rgba(255, 245, 250, 0.6); border-radius: 1.5rem; padding: 1rem; backdrop-filter: blur(4px); }
+    .fav-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; border-bottom: 2px dashed #ffb7ca; padding-bottom: 8px; }
+    .fav-header i { font-size: 1.4rem; color: #e25c7e; }
+    .fav-header h4 { font-size: 1.1rem; color: #9b4b6e; }
+    .items-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; max-height: 440px; overflow-y: auto; }
+    
+    .item-card { background: rgba(255,255,255,0.9); border-radius: 1.2rem; padding: 12px; display: flex; gap: 14px; align-items: center; border-left: 4px solid #ff8aa8; transition: all 0.25s ease; cursor: pointer; }
+    .item-card:hover { transform: translateX(6px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); background: #fff0f5; }
+
+    .item-card.jhope-list-card { border-left: 5px solid #ffd700; background: linear-gradient(95deg, #ffffff, #fffdf0); box-shadow: 0 4px 10px rgba(255, 215, 0, 0.15); animation: pulseGlow 2s infinite ease-in-out; }
+    @keyframes pulseGlow { 0% { box-shadow: 0 4px 10px rgba(255, 215, 0, 0.15); } 50% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.35); background: #fffce6; } 100% { box-shadow: 0 4px 10px rgba(255, 215, 0, 0.15); } }
+    .item-card.jhope-list-card .item-title { color: #b08200; font-weight: 800; }
+
+    .item-image { width: 60px; height: 60px; border-radius: 16px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #f0e0e8; }
+    .item-info { flex: 1; }
+    .item-title { font-weight: 700; color: #5a3a46; font-size: 0.9rem; }
+    .item-desc { font-size: 0.7rem; color: #a77a8a; margin-top: 4px; line-height: 1.3; }
+    .empty-message { text-align: center; padding: 1.5rem; color: #c2849c; font-style: italic; font-size: 0.75rem; background: rgba(255,255,255,0.5); border-radius: 1rem; }
+
+    .characters-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+    .glow-char { background: rgba(255,245,250,0.4); backdrop-filter: blur(12px); border-radius: 2rem; padding: 1rem; border: 1px solid rgba(255,200,220,0.7); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .char-img-glow { width: 75px; height: 75px; border-radius: 30px; object-fit: cover; box-shadow: 0 0 0 3px white, 0 0 0 6px #ffb7ca, 0 0 18px #ff99bb; }
+    .floating-razon { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #ff9eb6; padding: 8px 18px; border-radius: 50px; font-weight: 600; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; white-space: nowrap; }
+    footer { text-align: center; font-size: 0.7rem; margin-top: 2rem; opacity: 0.7; }
+  </style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-card"><h2>💌 acceso secreto</h2><p>tu nombre o apodo especial</p><input type="text" id="userAlias" placeholder="ej: mi vida, osita"><p>📅 nuestra fecha mágica</p><input type="text" id="specialDate" placeholder="ej: 14/02"><button id="loginSubmit" class="login-btn">✨ desbloquear mundo ✨</button></div>
+</div>
+
+<div class="main-content" id="mainApp">
+  <div class="app-wrapper">
+    <div class="tab-bar">
+      <div class="tab-item" data-tab="inicio"><i class="fas fa-home"></i><span>Inicio</span></div>
+      <div class="tab-item" data-tab="aventuras"><i class="fas fa-hiking"></i><span>Aventuras</span></div>
+      <div class="tab-item" data-tab="cartas"><i class="fas fa-envelope"></i><span>Cartas</span></div>
+      <div class="tab-item" data-tab="sorpresas"><i class="fas fa-gift"></i><span>Sorpresas</span></div>
+      <div class="tab-item" data-tab="musicas"><i class="fas fa-headphones"></i><span>Música</span></div>
+      <div class="tab-item" data-tab="personajes"><i class="fas fa-users"></i><span>Personajes</span></div>
+      <div class="tab-item" data-tab="ceo"><i class="fas fa-crown"></i><span>CEO MRX</span></div>
+      <div class="tab-item" data-tab="objetivos"><i class="fas fa-bullseye"></i><span>Objetivos</span></div>
+    </div>
+
+    <div id="inicio-page" class="page-container">
+      <div class="section-card"><div class="card-header"><i class="fas fa-images"></i><h3>✨ Recuerdos Destacados</h3></div><div class="carousel-container"><div class="carousel-slides" id="carouselSlides"></div></div></div>
+      <div class="section-card"><div class="card-header"><i class="fas fa-clock"></i><h3>Planificación & Tiempos</h3></div><p>⏳ <strong>Tiempo de elaboración:</strong> 3 semanas de código + noches de inspiración.<br>📅 <strong>Planificación:</strong> Diseño centrado en móvil, animaciones fluidas y cada detalle romántico.<br>🎯 <strong>Objetivo:</strong> Un universo digital que late por ti.</p></div>
+      <div class="section-card"><div class="card-header"><i class="fas fa-hourglass-half"></i><h3>Tiempo Juntos</h3></div><div id="timerContainer" class="timer-flex"></div></div>
+    </div>
+
+    <div id="aventuras-page" class="page-container">
+      <div class="section-card">
+        <div class="card-header"><i class="fas fa-map-signs"></i><h3>🌄 Pulsa para leer las descripciones 🌄</h3></div>
+        <div id="adventureRoad" class="adventure-road"></div>
+        <p style="font-size:0.7rem; margin-top:12px;">✨ Toca cualquier aventura, la imagen flotará lentamente con su historia ✨</p>
+      </div>
+    </div>
+
+    <div id="cartas-page" class="page-container">
+      <div class="section-card"><div class="card-header"><i class="fas fa-envelope-open-text"></i><h3>Buzón del corazón</h3></div><div id="envelopeTrigger" style="background:#fadbc8; border-radius:30px; padding:20px; text-align:center; cursor:pointer;">📩 Abrir primera carta mágica 📩</div><div id="lettersStack" class="letter-stack"></div></div>
+    </div>
+
+    <div id="sorpresas-page" class="page-container">
+      <div class="section-card"><div class="card-header"><i class="fas fa-gift"></i><h3>Rasca 3 Tesoros</h3></div><canvas id="scratchCanvas" width="300" height="140" style="width:100%; background:#baa998;"></canvas><div id="scratchFeedback" class="scratch-token">✨ Rasca para descubrir mensajes secretos ✨</div></div>
+      <div class="section-card"><div class="card-header"><i class="fas fa-heartbeat"></i><h3>Trivia: ¿Cuánto me amas?</h3></div><div id="loveTrivia"></div><p id="triviaResult" style="margin-top:10px;"></p></div>
+    </div>
+
+    <div id="musicas-page" class="page-container">
+      <div class="spotify-player" id="spotifyPlayer">
+        <div class="track-info">
+          <div class="cover-art" id="coverArt">🎵</div>
+          <div>
+            <div id="currentTrackName">Selecciona canción</div>
+            <div id="currentArtist" style="font-size:0.8rem;">❤️ Playlist</div>
+          </div>
+        </div>
+        <div class="controls">
+          <button id="prevTrackBtn" class="control-btn"><i class="fas fa-backward"></i></button>
+          <button id="playPauseSpotify" class="control-btn"><i class="fas fa-play-circle"></i></button>
+          <button id="nextTrackBtn" class="control-btn"><i class="fas fa-forward"></i></button>
+        </div>
+        <audio id="spotifyAudio" src=""></audio>
+      </div>
+
+      <div style="color: #ffb7ca; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; text-align: center; padding: 4px;">
+        ✨ Toca un integrante para desplegar sus canciones ✨
+      </div>
+      <div id="membersAccordionContainer" class="members-accordion-container"></div>
+    </div>
+
+    <div id="personajes-page" class="page-container">
+      <div style="background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 1rem; text-align: center; margin-bottom: 12px; border: 1px dashed #ff8aa8; font-size: 0.8rem; font-weight: 600; color: #9b4b6e;">
+        👀 Mira bien el contenido picando a cada uno de ellos 👀
+      </div>
+      <div class="section-card">
+        <div class="card-header"><i class="fas fa-star-of-life"></i><h3>✨ Personajes con Alma ✨</h3></div>
+        <div id="charactersGlowContainer" class="characters-grid"></div>
+      </div>
+      <div class="fav-section">
+        <div class="fav-header"><i class="fas fa-microphone-alt"></i><h4>🎤 Artistas Favoritos</h4></div>
+        <div id="artistas-list" class="items-list"></div>
+      </div>
+      <div class="fav-section">
+        <div class="fav-header"><i class="fas fa-tv"></i><h4>📺 Series Favoritas</h4></div>
+        <div id="series-list" class="items-list"></div>
+      </div>
+      <div class="fav-section">
+        <div class="fav-header"><i class="fas fa-dragon"></i><h4>🍥 Anime Favorito</h4></div>
+        <div id="anime-list" class="items-list"></div>
+      </div>
+    </div>
+
+    <!-- === CAMBIO AQUÍ: TEXTO AMPLIADO DE LA SECCIÓN CEO MRX === -->
+    <div id="ceo-page" class="page-container">
+      <div class="section-card">
+        <div class="card-header"><i class="fas fa-crown"></i><h3>CEO MRX</h3></div>
+        <p>"Detrás de cada línea de código hay un latido: el tuyo. Esta página es mucho más que código; es el reflejo de cada noche pensando en ti, transformando mis sentimientos en detalles interactivos para sacarte una sonrisa. Diseñé este mundo digital exclusivamente para que siempre recuerdes lo increíblemente especial que eres para mí y lo afortunado que me siento de tenerte en mi vida. Esta es mi gran obra maestra, pero tú eres mi inspiración eterna." — MRX</p>
+      </div>
+    </div>
+    <!-- === FIN DEL CAMBIO === -->
+
+    <!-- === CAMBIO AQUÍ: OBJETIVOS COMPLETAMENTE AMPLIADOS === -->
+    <div id="objetivos-page" class="page-container">
+      <div class="section-card">
+        <div class="card-header"><i class="fas fa-bullseye"></i><h3>Objetivos cumplidos</h3></div>
+        <ul>
+          <li style="margin-bottom: 8px;">✨ Hacerte sonreír con cada interacción y detalle interactivo.</li>
+          <li style="margin-bottom: 8px;">📸 Llenar de recuerdos inolvidables este espacio que es solo de los dos.</li>
+          <li style="margin-bottom: 8px;">🎵 Compartir nuestra propia banda sonora con las canciones que hacen latir nuestro corazón.</li>
+          <li style="margin-bottom: 8px;">🌟 Ser tu apoyo incondicional en cada uno de tus sueños, metas y locuras.</li>
+          <li style="margin-bottom: 8px;">🗺️ Descubrir nuevas aventuras juntos y plasmarlas aquí con su propia descripción especial.</li>
+          <li style="margin-bottom: 8px;">🔐 Mantener este rincón digital seguro, secreto y lleno de amor infinito todos los días.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- === FIN DEL CAMBIO === -->
+
+    <footer>💖 con amor y detalle — versión móvil optimizada</footer>
+  </div>
+</div>
+
+<div id="floatingModal" class="floating-modal">
+  <div class="floating-card" id="floatingCardInner">
+    <img id="modalImage" src="" alt="contenido">
+    <h3 id="modalTitle" style="margin-top: 0.5rem;"></h3>
+    <p id="modalDescription" style="margin: 0.8rem 0;"></p>
+    <button class="close-float-btn" id="closeFloatModal">Cerrar ✨</button>
+  </div>
+</div>
+<div id="floatingText" class="floating-razon"></div>
+
+<script>
+  // ========== LOGIN Y TABS ==========
+  const loginDiv = document.getElementById('loginScreen'), mainDiv = document.getElementById('mainApp');
+  document.getElementById('loginSubmit').addEventListener('click',()=>{ let n=document.getElementById('userAlias').value.trim(), d=document.getElementById('specialDate').value.trim(); if(n&&d){ loginDiv.style.opacity='0'; setTimeout(()=>{ loginDiv.style.display='none'; mainDiv.style.opacity='1'; mainDiv.style.visibility='visible'; },800); } else { document.querySelector('.login-btn').classList.add('shake'); setTimeout(()=>document.querySelector('.login-btn').classList.remove('shake'),500); } });
+
+  const tabs=document.querySelectorAll('.tab-item'), pages=document.querySelectorAll('.page-container');
+  function applyTheme(sec){ document.body.classList.remove('theme-inicio','theme-aventuras','theme-cartas','theme-sorpresas','theme-musicas','theme-personajes','theme-ceo','theme-objetivos'); document.body.classList.add(`theme-${sec}`); }
+  tabs.forEach(t=>{ t.addEventListener('click',()=>{ let target=t.dataset.tab; pages.forEach(p=>p.classList.remove('active-page')); document.getElementById(`${target}-page`).classList.add('active-page'); tabs.forEach(tab=>tab.classList.remove('active')); t.classList.add('active'); applyTheme(target); }); }); applyTheme('inicio'); document.querySelector('.tab-item[data-tab="inicio"]').classList.add('active');
+
+  // CARRUSEL
+  const carouselData = ["📸 Te amo mucho mi amor ✨", "💖 Me encantas", "🌟 Me iluminas siempre", "🎉 Te tengo un amor eterno"];
+  const slidesContainer=document.getElementById('carouselSlides'); carouselData.forEach(txt=>{ let div=document.createElement('div'); div.className='carousel-slide'; div.innerText=txt; slidesContainer.appendChild(div); }); let slideIndex=0; setInterval(()=>{ slideIndex=(slideIndex+1)%carouselData.length; slidesContainer.style.transform=`translateX(-${slideIndex*100}%)`; },3800);
+
+  // CONTADOR
+  const startDate=new Date(2025,9,18); function updateTimer(){ let diff=new Date()-startDate; let d=Math.floor(diff/864e5), h=Math.floor((diff%864e5)/36e5), m=Math.floor((diff%36e5)/6e4), s=Math.floor((diff%6e4)/1e3); document.getElementById('timerContainer').innerHTML=`<div class="time-box"><div>${d}</div><div>Días</div></div><div class="time-box"><div>${h}</div><div>Horas</div></div><div class="time-box"><div>${m}</div><div>Min</div></div><div class="time-box"><div>${s}</div><div>Seg</div></div>`; } setInterval(updateTimer,1000); updateTimer();
+
+  // AVENTURAS
+  const adventures = [
+    { titulo: "Amanecer contigo es algo unico", descripcion: "Cada que abro los ojos ve la hora y el dia que es con tan solo eso y tus mensajes me siento realmente afortunado", img: "image/kb1.jpg" },
+    { titulo: "El sentir el tu presencia", descripcion: "Tomar tu mano, tocarte, sentir cada parte de ti amo en realidad todo porque en tus ojos estoy conociendo la luz que me hacia falta", img: "image/kb2.jpg" },
+    { titulo: "Noche de sentimientos encontrados", descripcion: "Cuando la noche cae, siempre me pregunto como le hize para merecer a una gran chica, mujer como tu mi amor me encantas", img: "image/kb3.jpeg" },
+    { titulo: "Mi promesa de por vida", descripcion: "Me gustaria compartir contigo siempre mis mayores recuerdos yo me quedare juntito a ti siempre", img: "image/kb4.jpeg" }
+  ];
+  const adventureRoadDiv = document.getElementById('adventureRoad');
+  const modal = document.getElementById('floatingModal'), modalImg = document.getElementById('modalImage'), modalTitle = document.getElementById('modalTitle'), modalDesc = document.getElementById('modalDescription'), closeModalBtn = document.getElementById('closeFloatModal'), innerCard = document.getElementById('floatingCardInner');
+
+  function openContentModal(title, desc, imgSrc, isJhope = false) { 
+    modalImg.src = imgSrc; modalTitle.innerText = title; modalDesc.innerText = desc; modal.style.visibility = 'visible'; modal.style.opacity = '1'; 
+    if(isJhope) { innerCard.classList.add('jhope-highlight'); closeModalBtn.classList.add('jhope-btn'); canvasConfetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } }); }
+    else { innerCard.classList.remove('jhope-highlight'); closeModalBtn.classList.remove('jhope-btn'); canvasConfetti({ particleCount: 40, spread: 45, origin: { y: 0.6 } }); }
+    innerCard.classList.add('show-card'); 
+  }
+
+  function closeModalWithAnim() { innerCard.classList.remove('show-card'); modal.style.opacity = '0'; setTimeout(() => { modal.style.visibility = 'hidden'; }, 300); }
+  adventures.forEach(adv => { const node = document.createElement('div'); node.className = 'adventure-node'; node.innerHTML = `<img class="adventure-img-mini" src="${adv.img}"><div class="adventure-text-mini"><h4>${adv.titulo}</h4><p style="font-size:0.75rem; opacity:0.8;">Toca para descubrir ✨</p></div>`; node.addEventListener('click', () => openContentModal(adv.titulo, adv.descripcion, adv.img, false)); adventureRoadDiv.appendChild(node); });
+  closeFloatModal.addEventListener('click', closeModalWithAnim); modal.addEventListener('click', (e) => { if(e.target === modal) closeModalWithAnim(); });
+
+  // ========== CARTAS ==========
+  let cartaActual=0; 
+  const lettersStackDiv=document.getElementById('lettersStack'), envelopeBtn=document.getElementById('envelopeTrigger');
+
+  /* === CAMBIO AQUÍ: 10 TEXTOS COMPLETAMENTE ÚNICOS Y ESPECIALES PARA CADA CARTA === */
+  const cartasTextos = [
+    "💌 Carta #1: Desde que entraste a mi vida, cada día tiene un brillo diferente. Eres mi pensamiento favorito al despertar y mi último suspiro al dormir. Eres el sueño del que nunca quiero despertar. 💖",
+    "💌 Carta #2: Me encantas de una manera que no puedo explicar. Tu sonrisa, tu forma de hablar, cómo me haces sentir seguro... Todo en ti es perfecto para mí. Gracias por existir y por estar a mi lado. 🌟",
+    "💌 Carta #3: A veces me quedo mirando tus fotos y me pregunto cómo tuve la suerte de encontrarte. Eres una chica increíble, fuerte, hermosa y con un corazón enorme. Me siento el chico más afortunado del mundo. 🐨🐹",
+    "💌 Carta #4: Mi promesa para ti es cuidarte, respetarte y amarte en cada momento, tanto en los días soleados como en los lluviosos. Siempre estaré juntito a ti, sosteniendo tu mano contra viento y marea. 🐱🐿️",
+    "💌 Carta #5: Eres mi refugio seguro y mi lugar feliz. No importa qué tan difícil sea el día, saber que estás ahí lo cambia todo por completo. Gracias por ser mi paz y mi mayor motivación. 🐥🐯",
+    "💌 Carta #6: Me enamoro más de ti con cada detalle de tu risa, las cosas que compartimos y la conexión tan mágica que tenemos. Eres mi persona favorita en todo el universo. 🐰💜",
+    "💌 Carta #7: Contigo he aprendido lo que realmente significa amar con el alma. Este espacio digital es solo una pequeña muestra de todo el amor infinito que guardo por ti en mi pecho. ¡Eres mi vida entera! 📸✨",
+    "💌 Carta #8: Cada aventura contigo es un recuerdo que guardo como el tesoro más valioso. Me emociona tanto pensar en nuestro futuro y en todas las cosas hermosas que aún nos quedan por vivir juntos. 🌄🗺️",
+    "💌 Carta #9: Eres mi inspiración para ser mejor cada día. Tu amor me da fuerzas, me llena de alegría y me enseña a ver el lado más bonito del mundo. Te amo hoy, mañana y el resto de mis días. 🌈👑",
+    "💌 Carta #10: Llegaste a la última carta mágica, pero nuestro amor apenas está escribiendo sus capítulos más bellos. Eres, fuiste y siempre serás el amor de mi vida entera. ¡Te amo infinitamente, mi princesa! 💍💖"
+  ];
+  /* === FIN DEL CAMBIO === */
+
+  function agregarCarta(){ if(cartaActual<cartasTextos.length){ let nuevaCarta=document.createElement('div'); nuevaCarta.className='letter-card-item'; nuevaCarta.innerText=cartasTextos[cartaActual]; nuevaCarta.onclick=()=>{ alert(cartasTextos[nuevaCarta.dataset.index]); canvasConfetti({particleCount:70, spread:50}); }; nuevaCarta.dataset.index=cartaActual; lettersStackDiv.appendChild(nuevaCarta); cartaActual++; if(cartaActual===10) envelopeBtn.style.display='none'; } }
+  envelopeBtn.addEventListener('click',()=>{ if(cartaActual<10) agregarCarta(); });
+
+  // RASCA
+  const canvas=document.getElementById('scratchCanvas'), ctx=canvas.getContext('2d');
+  const tokensTexts = ["💎 Te amo más allá del tiempo", "🌈 Eres mi color favorito", "🌟 Contigo siempre es primavera"]; let tokensRevealed=[false,false,false], totalRevealed=0;
+  function drawScratch(){ ctx.fillStyle='#bcab99'; ctx.fillRect(0,0,300,140); ctx.fillStyle='#4e2e3b'; ctx.font='bold 16px monospace'; ctx.fillText("❤️ RASCA LOS 3 ❤️",75,40); for(let i=0;i<3;i++){ if(!tokensRevealed[i]){ ctx.fillStyle='#a57c6e'; ctx.fillRect(20+ i*90, 80, 45, 30); ctx.fillStyle='white'; ctx.fillText(`${i+1}`,38+i*90,100); } else { ctx.fillStyle='#d4b48c'; ctx.fillRect(20+ i*90, 80, 45, 30); ctx.fillStyle='#2c1e24'; ctx.font='10px monospace'; ctx.fillText(tokensTexts[i].substring(0,2),35+i*90,100); } } }
+  drawScratch(); let scratching=false;
+  function scratchAction(e){ if(!scratching) return; const rect=canvas.getBoundingClientRect(); let cx,cy; if(e.touches){ cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; } let x=(cx-rect.left)*(300/rect.width), y=(cy-rect.top)*(140/rect.height); ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(x,y,12,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='source-over'; for(let i=0;i<3;i++){ if(!tokensRevealed[i]){ let imgData=ctx.getImageData(20+i*90,80,45,30); let transparent=0; for(let p=0;p<imgData.data.length;p+=4) if(imgData.data[p+3]===0) transparent++; if(transparent>280){ tokensRevealed[i]=true; totalRevealed++; document.getElementById('scratchFeedback').innerHTML=`✨ ¡Descubriste: ${tokensTexts[i]}! ✨`; canvasConfetti({particleCount:60}); drawScratch(); } } } if(totalRevealed===3) document.getElementById('scratchFeedback').innerHTML='🎉 ¡Tres tesoros desbloqueados! 🎉'; }
+  canvas.addEventListener('mousedown',()=>scratching=true); window.addEventListener('mouseup',()=>scratching=false); canvas.addEventListener('mousemove',scratchAction); canvas.addEventListener('touchstart',e=>{ scratching=true; scratchAction(e); e.preventDefault();}); window.addEventListener('touchend',()=>scratching=false); canvas.addEventListener('touchmove',scratchAction);
+
+  // TRIVIA
+  const triviaDiv=document.getElementById('loveTrivia'); const preguntasTrivia=[{p:"¿Cuánto me amas del 1 al 10?", opts:["5","7","10","9"], correct:2},{p:"Cuando piensas en mí, sientes:", opts:["Alegría","Mariposas","Amor total","Todo lo anterior"], correct:3},{p:"¿Qué harías por nuestro amor?", opts:["Todo","Sonreír cada día","Cuidar cada detalle","Las 3 opciones"], correct:3}]; let userAnswers=0, answeredTrivia=[false,false,false];
+  function renderTrivia(){ triviaDiv.innerHTML=''; preguntasTrivia.forEach((q,idx)=>{ let qDiv=document.createElement('div'); qDiv.style.marginBottom='1rem'; qDiv.innerHTML=`<strong>${q.p}</strong><div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:5px;">${q.opts.map((opt,oidx)=>`<span class="trivia-opt" data-qidx="${idx}" data-oidx="${oidx}" style="background:#ffe2ec; padding:6px 14px; border-radius:40px; cursor:pointer;">${opt}</span>`).join('')}</div>`; triviaDiv.appendChild(qDiv); }); document.querySelectorAll('.trivia-opt').forEach(el=>{ el.addEventListener('click',()=>{ let qidx=parseInt(el.dataset.qidx), oidx=parseInt(el.dataset.oidx); if(!answeredTrivia[qidx]){ if(oidx===preguntasTrivia[qidx].correct){ answeredTrivia[qidx]=true; userAnswers++; document.getElementById('triviaResult').innerHTML=`💖 ¡Correcta! Vas ${userAnswers}/3`; canvasConfetti({particleCount:40}); } else { document.getElementById('triviaResult').innerHTML='💗 Casi, inténtalo de nuevo.'; } renderTrivia(); } }); }); }
+  renderTrivia();
+
+  // SPOTIFY REPRODUCTOR
+  const audioSpotify=document.getElementById('spotifyAudio'), playPauseSpot=document.getElementById('playPauseSpotify'), trackNameSpan=document.getElementById('currentTrackName'), artistSpan=document.getElementById('currentArtist'), coverDivSpot=document.getElementById('coverArt'); let isPlayingSpot=false;
+  playPauseSpot.addEventListener('click',()=>{ if(!audioSpotify.src) return; if(isPlayingSpot){ audioSpotify.pause(); playPauseSpot.innerHTML='<i class="fas fa-play-circle"></i>'; } else { audioSpotify.play().catch(()=>{}); playPauseSpot.innerHTML='<i class="fas fa-pause-circle"></i>'; } isPlayingSpot=!isPlayingSpot; });
+
+  // PERSONAJES GLOW
+  let glowChars = [{ name: "🌟 Princesa Soñada", desc: "Luz de mi vida, dueña de mi corazón.", img: "image/kb5.jpg" },{ name: "✨ Cada vez me siento mas afortunado", desc: "Siempre observo cada una de tus fotos y encerio que hermosa mi noviecita.", img: "image/kb6.jpg" }];
+  function renderGlow(){ const cont=document.getElementById('charactersGlowContainer'); cont.innerHTML=''; glowChars.forEach(ch=>{ let card=document.createElement('div'); card.className='glow-char'; card.innerHTML=`<img class="char-img-glow" src="${ch.img}"><div style="flex:1"><strong>${ch.name}</strong><div style="font-size:0.8rem;">${ch.desc}</div></div>`; cont.appendChild(card); }); }
+  renderGlow();
+
+  // ========== INTEGRANTES Y ACORDEONES ==========
+  const membersMusicData = [
+    { id: "jhope", name: "🐿️ j-hope (Su Favorito ✨)", songs: [{ name: "Chicken Noodle Soup", artist: "j-hope feat. Becky G", file: "musica/j-hope _Chicken Noodle Soup (feat. Becky G)_ MV(MP3_160K).mp3" },{ name: "MORE", artist: "j-hope", file: "musica/j-hope _MORE_ Official MV(MP3_160K).mp3" },{ name: "Arson", artist: "j-hope", file: "musica/j-hope _방화 (Arson)_ Official MV(MP3_160K).mp3" },{ name: "NEURON", artist: "j-hope with Gaeko, yoonmirae", file: "musica/j-hope _NEURON (with 개코_ 윤미래)_ Official Motion Picture(MP3_160K).mp3" },{ name: "On the street", artist: "j-hope with J. Cole", file: "musica/j-hope _on the street (with J. Cole)_ Official MV(MP3_160K).mp3" },{ name: "Daydream", artist: "j-hope", file: "musica/j-hope _Daydream (백일몽)_ MV(MP3_160K).mp3" }] },
+    { id: "jimin", name: "🐥 Jimin", songs: [{ name: "Like Crazy", artist: "Jimin", file: "musica/Jimin _ Like Crazy __ Sub. Español   Vídeo Oficial(MP3_160K).mp3" },{ name: "Set Me Free Pt.2", artist: "Jimin", file: "musica/지민 (Jimin) _Set Me Free Pt.2_ Official MV(MP3_160K).mp3" },{ name: "Who", artist: "Jimin", file: "musica/Jimin - Who (Traducida al Español)(MP3_160K).mp3" },{ name: "Filter", artist: "Jimin", file: "musica/Jimin _ ❝ Filter ❞ [Sub. Español](MP3_160K).mp3" }] },
+    { id: "jungkook", name: "🐰 Jungkook", songs: [{ name: "Seven", artist: "Jungkook feat. Latto", file: "musica/정국 (Jung Kook) _Seven (feat. Latto)_ Official MV(MP3_160K).mp3" },{ name: "Standing Next to You", artist: "Jungkook", file: "musica/정국 (Jung Kook) _Standing Next to You_ Official MV(MP3_160K).mp3" },{ name: "3D", artist: "Jungkook feat. Jack Harlow", file: "musica/Jungkook - 3D (Alternate Ver.) (Traducida al Español)(MP3_160K).mp3" },{ name: "Euphoria", artist: "Jungkook", file: "musica/EUPHORIA - BTS (JUNGKOOK) [Traducida al Español](MP3_160K).mp3" }] },
+    { id: "rm", name: "🐨 RM", songs: [{ name: "Wild Flower", artist: "RM with yu投入", file: "musica/RM (BTS)_ YOUJEEN – Wild Flower _ Sub. Español   Vídeo Oficial(MP3_160K).mp3" },{ name: "Come back to me", artist: "RM", file: "musica/RM _Come back to me_ Official MV(MP3_160K).mp3" },{ name: "Lost!", artist: "RM", file: "musica/RM _LOST__ Official MV(MP3_160K).mp3" },{ name: "Persona", artist: "RM", file: "musica/BTS (방탄소년단) MAP OF THE SOUL _ PERSONA _Persona_ Comeback Trailer(MP3_160K).mp3" }] },
+    { id: "suga", name: "🐱 Suga (Agust D)", songs: [{ name: "Haegeum", artist: "Agust D", file: "musica/Agust D _해금_ Official MV(MP3_160K).mp3" },{ name: "Daechwita", artist: "Agust D", file: "musica/Agust D _대취타_ MV(MP3_160K).mp3" },{ name: "People", artist: "Agust D", file: "musica/AGUST D - PEOPLE __ Sub Español(MP3_160K).mp3" },{ name: "Eight", artist: "IU feat. SUGA", file: "musica/IU FT. SUGA (방탄소년단) _ ❝ Eight ❞. [Traducido al español e inglés](MP3_160K).mp3" }] },
+    { id: "v", name: "🐯 V", songs: [{ name: "Slow Dancing", artist: "V", file: "musica/V _Slow Dancing_ Official MV(MP3_160K).mp3" },{ name: "Love Me Again", artist: "V", file: "musica/V _Love Me Again_ Official MV(MP3_160K).mp3" },{ name: "Christmas Tree", artist: "V", file: "musica/V [BTS] - Christmas Tree (Our Beloved Summer) OST Part.5 (traducida al español)(MP3_160K).mp3" },{ name: "Sweet Night", artist: "V", file: "musica/V (BTS) _ Sweet Night (ITAEWON CLASS OST Part.12) ‣ sub español _ lyrics(MP3_160K).mp3" }] },
+    { id: "jin", name: "🐹 Jin", songs: [{ name: "The Astronaut", artist: "Jin", file: "musica/진 (Jin) _The Astronaut_ Official MV(MP3_160K).mp3" },{ name: "Super Tuna", artist: "Jin", file: "musica/진 (Jin) _슈퍼 참치 (Super Tuna)_ Special Video(MP3_160K).mp3" },{ name: "Epiphany", artist: "Jin", file: "musica/Intro_ Epiphany - BTS (Jin) [Traducida al Español](MP3_160K).mp3" },{ name: "Moon", artist: "Jin", file: "musica/「Moon - Jin _ BTS _ Traducida al Español」(MP3_160K).mp3" }] },
+    { id: "bts", name: "💜 BTS (Todos Juntos)", songs: [{ name: "Like Animals", artist: "BTS", file: "musica/Like Animals(MP3_160K).mp3" },{ name: "Butter", artist: "BTS", file: "musica/BTS (방탄소년단) _Butter_ Official MV(MP3_160K).mp3" },{ name: "Life Goes On", artist: "BTS", file: "musica/BTS (방탄소년단) _Life Goes On_ Official MV(MP3_160K).mp3" },{ name: "Boy With Luv", artist: "BTS", file: "musica/BTS (방탄소년단) _작은 것들을 위한 시 (Boy With Luv) (feat. Halsey)_ Official MV(MP3_160K).mp33" },{ name: "Yet To Come", artist: "BTS", file: "musica/BTS - Yet To Come (The Most Beautiful Moment) (Traducida al Español)(MP3_160K).mp3" }] }
+  ];
+
+  function renderMembersAccordions() {
+    const container = document.getElementById('membersAccordionContainer');
+    if (!container) return; container.innerHTML = '';
+    membersMusicData.forEach(member => {
+      const details = document.createElement('details'); details.className = member.id === 'jhope' ? 'member-accordion jhope-accordion' : 'member-accordion';
+      const summary = document.createElement('summary'); summary.innerText = member.name; details.appendChild(summary);
+      const ul = document.createElement('ul'); ul.className = 'songs-list';
+      member.songs.forEach(song => {
+        const li = document.createElement('li'); li.className = 'song-row';
+        li.innerHTML = `<div class="song-title-wrapper"><span class="song-name">${escapeHtml(song.name)}</span><span class="song-artist">${escapeHtml(song.artist)}</span></div><div class="play-icon-cell"><i class="fas fa-play"></i></div>`;
+        li.addEventListener('click', e => { e.preventDefault(); trackNameSpan.innerText = song.name; artistSpan.innerText = song.artist; coverDivSpot.innerText = "🎵"; audioSpotify.src = song.file; audioSpotify.play().then(() => { playPauseSpot.innerHTML = '<i class="fas fa-pause-circle"></i>'; isPlayingSpot = true; if (member.id === 'jhope') canvasConfetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } }); }).catch(() => { playPauseSpot.innerHTML = '<i class="fas fa-pause-circle"></i>'; isPlayingSpot = true; }); });
+        ul.appendChild(li);
+      });
+      details.appendChild(ul); container.appendChild(details);
+    });
+  }
+  renderMembersAccordions();
+
+  // ========== LISTAS PERSONAJES ==========
+  const artistesData = [{ name: "🎵 j-hope", description: "El rey del ritmo.", img: "image/Hope3.png" },{ name: "🎵 Jimin", description: "Voz angelical.", img: "image/jimin3.png" },{ name: "🎵 Jungkook", description: "Golden Maknae.", img: "image/jung2.png" },{ name: "🎵 RM", description: "Líder con rap profundo.", img: "image/RM3.png" },{ name: "🎵 Suga", description: "Genialidad en producción.", img: "image/Suga.png" },{ name: "🎵 V", description: "Voz barítona única.", img: "image/V.png" },{ name: "🎵 Jin", description: "Notas altas espectaculares.", img: "image/jin3.png" }];
+  const seriesData = [{ name: "📺 Blair Waldorf", description: "Elegante y decidida.", img: "image/Blair3.png" },{ name: "📺 Katherine Pierce", description: "Presencia icónica.", img: "image/katherine.png" },{ name: "📺 Love Quinn", description: "Entrega total.", img: "image/You4.png" }];
+  const animeData = [{ name: "🍥 Nico Robin", description: "Mente brillante.", img: "image/Robin2.png" },{ name: "🍥 Takemichi Hanagaki", description: "Resiliencia.", img: "image/Takemichi3.png" },{ name: "🍥 Ken Kaneki", description: "Lucha interna.", img: "image/kaneki2.png" }];
+
+  function renderListWithImages(containerId, data) {
+    const container = document.getElementById(containerId); if (!container) return; container.innerHTML = '';
+    data.forEach(item => {
+      const itemDiv = document.createElement('div'); const isJhope = item.name.includes("j-hope"); itemDiv.className = isJhope ? 'item-card jhope-list-card' : 'item-card';
+      itemDiv.innerHTML = `<img class="item-image" src="${item.img}" onerror="this.src='https://via.placeholder.com/60x60?text=📷'"><div class="item-info"><div class="item-title">${escapeHtml(item.name)}</div><div class="item-desc">${escapeHtml(item.description)}</div></div>`;
+      itemDiv.addEventListener('click', () => openContentModal(item.name, item.description, item.img, isJhope)); container.appendChild(itemDiv);
+    });
+  }
+  function escapeHtml(str) { return str ? str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) : ''; }
+  renderListWithImages('artistas-list', artistesData); renderListWithImages('series-list', seriesData); renderListWithImages('anime-list', animeData);
+</script>
+</body>
+</html>
